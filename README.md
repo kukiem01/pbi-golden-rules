@@ -1,6 +1,6 @@
-===============================
+
 POWER BI STANDARDS (Repo Docs)
-===============================
+=
 
 	Purpose
 		- Provide a single, consistent set of rules for:
