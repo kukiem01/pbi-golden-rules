@@ -1,4 +1,4 @@
-# 02) Semantic Model — Design, Relationships, Visibility
+# 02) Semantic Model - Design, Relationships, Visibility
 
 ## Goal
 - Self-service usability
