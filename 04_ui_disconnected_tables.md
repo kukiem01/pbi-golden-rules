@@ -1,4 +1,4 @@
-# 04) Disconnected / Support Tables — 30_Support_UI
+# 04) Disconnected / Support Tables - 30_Support_UI
 
 ## Goal
 - Disconnected tables are clearly identifiable
