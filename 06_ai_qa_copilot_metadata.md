@@ -1,4 +1,4 @@
-# 06) AI / Q&A / Copilot — Metadata Hygiene
+# 06) AI / Q&A / Copilot - Metadata Hygiene
 
 ## Goal
 - Reduce ambiguity in natural language queries
