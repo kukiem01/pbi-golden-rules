@@ -1,0 +1,31 @@
+==========================
+DOC_04_Blueprint
+==========================
+
+	QUERY GROUPS
+		- 00_Raw_Source -> 10_Staging -> 20_Model -> 30_Support_UI
+
+	POWER QUERY
+		- Non-loaded technical queries (Enable Load OFF):
+			- Raw_*
+			- Stg_*
+			- DOC_*
+		- Loaded model tables (Enable Load ON):
+			- Business names (Title Case with spaces)
+
+	DISCONNECTED / SUPPORT TABLES (30_Support_UI) — ONE STANDARD
+		- Naming rule:
+			- _UI <Short User Name> [v2] [(Page)]
+		- Requirements:
+			- Names are short and user-facing (Fields pane friendly)
+			- Pages are NOT part of the core name
+				- Use (Page) only if strictly page-only
+			- Variants use v2/v3 only when needed
+
+	MODEL
+		- Star schema where possible
+		- Single-direction relationships by default
+		- Hide technical fields; keep Fields pane clean
+		- Measures table:
+			- Key Measures (or All Measures)
+			- Display Folders for organization
