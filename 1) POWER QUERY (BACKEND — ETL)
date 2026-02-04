@@ -1,68 +1,99 @@
-1) POWER QUERY (BACKEND — ETL)
-GOAL: Maintainable, readable, and performant transformation logic with clear lineage.
+==========================
+DOC_01_PowerQuery_ETL
+==========================
 
-IMPORTANT (PBIX reality):
-- For tables loaded to the model, the Power Query query name and the model table name are effectively the same.
-- Therefore:
-  * Use TECHNICAL prefixes only for NON-LOADED queries (Raw_, Stg_, DOC_).
-  * Use BUSINESS-FRIENDLY names for LOADED tables (facts, dimensions, and user-facing UI tables).
-- Use Query Groups (folders) to represent layers (Raw/Staging/Model/UI) instead of prefixes on loaded tables.
+	Goal:
+		- Maintainable, readable, performant transformation logic
+		- Clear lineage and predictable structure
 
-Folder structure (Query Groups):
-00_Raw_Source
-  - Raw data connections / entry points (minimal transforms)
-10_Staging
-  - Intermediate transforms (cleaning/shaping/joining), typically referenced by final queries
-20_Model
-  - Final analytical tables loaded into the model (BUSINESS names)
-30_Support_UI
-  - Support/UI tables (slicers, parameters, helper lists) — business names if user-facing
+	IMPORTANT (PBIX reality)
+		- For loaded tables, the Power Query query name == the model table name
+		- Therefore:
+			- Use TECHNICAL prefixes only for NON-LOADED queries:
+				- Raw_
+				- Stg_
+				- DOC_
+			- Use MODEL-FACING naming for LOADED tables:
+				- Facts
+				- Dimensions
+				- Support tables used in visuals
 
-Query naming conventions:
-Non-loaded technical query prefixes (Enable Load = Off):
-- Raw_* : external source entry queries
-- Stg_* : staging / intermediate queries
-- DOC_* : documentation queries
+	FOLDER STRUCTURE (Query Groups)
+		- 00_Raw_Source
+			- Raw data connections / entry points
+			- Minimal transforms
+		- 10_Staging
+			- Intermediate transforms (cleaning, shaping, joins)
+			- Referenced by final queries
+		- 20_Model
+			- Final analytical tables loaded into the model
+			- Business names
+		- 30_Support_UI
+			- Disconnected/support tables for report UX
+			- Loaded only if used (slicers/parameters/etc.)
 
-Loaded tables (Enable Load = On):
-- Use business-friendly names (Title Case with spaces).
-- Avoid technical prefixes like Fact_/Dim_ in names visible in the Fields list.
+	NAMING CONVENTIONS
+		- Non-loaded queries (Enable Load = Off)
+			- Raw_*		- External source entry queries
+			- Stg_*		- Staging / intermediate queries
+			- DOC_*		- Documentation queries
+		- Loaded analytical tables (Enable Load = On)
+			- Title Case with spaces
+			- No technical prefixes visible in Fields pane
 
-Recommended pattern (non-loaded queries):
-<Prefix>_<CoreName>[_<TransformSuffix>]
-Examples:
-- Raw_SalesOrders
-- Stg_SalesOrders_Clean
-- Stg_SalesOrders_Shaped
-- Sales Orders  (final loaded table; business name)
+	DISCONNECTED / SUPPORT TABLES (Group 30) — ONE STANDARD
+		- All disconnected/support tables MUST follow:
+			- _UI <Short User Name> [v2] [(Page)]
+		- Rules:
+			- _UI
+				- Marks the table as disconnected/support
+				- Enables fast filtering/autocomplete in DAX by typing "_UI"
+			- <Short User Name>
+				- Concise and user-facing (optimized for Fields pane)
+				- Describes what the user selects/controls
+			- [v2] / [v3]
+				- Only when multiple variants exist
+			- [(Page)]
+				- Only if strictly used on a single page
+				- Otherwise omit (do not build core names around pages)
+		- Examples:
+			- _UI Time (YTD/MAT)
+			- _UI Promo Mode
+			- _UI Seg Order v2
+			- _UI G2N Tooltip (Gross to Net)	- page-only example
 
-Loading rules:
-- Disable 'Enable Load' for Raw_*, Stg_*, DOC_* and helpers not meant to be model tables.
-- Enable load only for final analytical tables and UI tables that must exist in the model.
+	LOADING RULES
+		- Disable Enable Load for:
+			- Raw_*
+			- Stg_*
+			- DOC_*
+			- Helpers not meant to exist as model tables
+		- Enable load only for:
+			- Final analytical tables
+			- _UI tables actually used by slicers/parameters/visual logic
 
-UI/helper tables from external sources (e.g., Excel on SharePoint):
-- Recommended: create a Raw_* entry query in 00_Raw_Source (load off), then Reference into a final UI table in 30_Support_UI.
-- Use Stg_* only when transformations are non-trivial or reused.
+	EXTERNAL SOURCES FOR _UI TABLES (e.g., Excel on SharePoint)
+		- Recommended flow:
+			- Raw_*		(in 00_Raw_Source, load off)
+				-> Reference
+			- _UI ...	(in 30_Support_UI, load on if needed)
+		- Use Stg_* only when:
+			- Transforms are non-trivial
+			- Logic is reused by multiple final tables
 
-Inline helper tables (no external source):
-- If a helper/UI table is fully defined in M (e.g., Table.FromRows / compressed payload), place it directly in 30_Support_UI as UI_* or a business name.
-- Split into Stg_ + final UI only if the inline payload is large or you want to separate 'raw inline data' from transforms.
+	INLINE _UI TABLES (no external source)
+		- Place directly in 30_Support_UI as:
+			- _UI ...
+		- Split into Stg_ + _UI only when:
+			- Inline payload is large
+			- You want to separate raw inline data from transforms
 
-Performance & reliability:
-- Filter early: remove unnecessary rows/columns as soon as possible
-- Preserve query folding where possible (push transforms to the source)
-- Apply expensive operations late (sort, group, pivot, merge-heavy steps)
-- Prefer Reference over Duplicate to avoid repeating heavy logic
-- Set correct data types early enough to prevent surprises, but avoid breaking folding unnecessarily
-- Use parameters for environment-specific items (server, warehouse, paths) where appropriate
-
-DirectQuery guidance (especially important for Databricks):
-- In DirectQuery, transformations must fold back to the source; non-foldable steps may be unsupported or lead to failures/performance issues.
-- Staging (Raw -> Stg -> Final) is OK ONLY if the final loaded query still folds into a single native query.
-- Reference does NOT inherently break folding; non-foldable steps do.
-- Keep PQ transformations minimal and 'fold-friendly' in DirectQuery.
-- Move heavy shaping upstream (Databricks view/materialization) when PQ steps get complex or folding becomes fragile.
-
-How to validate folding (don’t guess):
-- Use Query Plan and/or Query Diagnostics; also monitor source-side query history (e.g., Databricks SQL Warehouse).
-- 'View Native Query' availability can be connector-dependent; diagnostics are more reliable.
+	PERFORMANCE & RELIABILITY
+		- Filter early; preserve query folding where possible
+		- Expensive operations late:
+			- sort
+			- group
+			- pivot
+			- heavy merges
+		- Prefer Reference over Duplicate
+		- Set correct data types without breaking folding unnecessarily
