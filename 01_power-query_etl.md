@@ -1,4 +1,4 @@
-# 01) Power Query (ETL) — Structure, Naming, Loading
+# 01) Power Query (ETL) - Structure, Naming, Loading
 
 ## Goal
 - Maintainable, readable, performant transformations
