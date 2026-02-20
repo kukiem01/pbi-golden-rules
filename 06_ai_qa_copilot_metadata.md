@@ -23,3 +23,9 @@
 - Keep naming consistent:
   - facts/dims: business names
   - support/disconnected: `_UI` standard
+
+## Q&A / Copilot practical constraints
+- Prefer explicit, well-named measures for natural language reliability
+- Field Parameters and dynamic selector logic can be less predictable in Q&A
+- For critical business questions, provide explicit fallback measures and synonyms
+- Hide purely technical `_UI` columns from end users when they do not add semantic value

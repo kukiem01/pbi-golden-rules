@@ -32,8 +32,11 @@
 - `DOC_<NN>_<Topic>` — documentation
 
 ### Loaded model tables (Enable Load = ON)
-- Title Case with spaces
-- No technical prefixes (Raw_/Stg_) visible in the Fields pane
+- Tables in `20_Model`:
+  - Title Case with spaces
+  - No technical prefixes (`Raw_` / `Stg_`) visible in the Fields pane
+- Tables in `30_Support_UI`:
+  - Use the `_UI` naming standard from `04_ui_disconnected_tables.md`
 
 ## Loading rules
 - Enable Load = **OFF** for:

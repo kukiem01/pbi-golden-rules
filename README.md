@@ -4,6 +4,7 @@
 - Provide a single, consistent set of rules for:
   - Power Query (ETL) structure and naming
   - Semantic model design (relationships, star schema)
+  - Date table and time intelligence baseline
   - Measure organization
   - Disconnected/support tables in 30_Support_UI
   - Performance rules (DirectQuery + folding + incremental refresh)

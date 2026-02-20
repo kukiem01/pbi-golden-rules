@@ -5,16 +5,19 @@
 - Easy to find in the Fields pane and DAX autocomplete
 - Naming scales with new tables regardless of origin or page usage
 
-## One naming standard (mandatory)
-All disconnected/support tables in 30_Support_UI must be named:
+## One naming standard (default)
+All disconnected/support tables in 30_Support_UI should be named:
 
 `_UI <Short User Name> [(Set/Clarifier)] [v2]`
+
+- If a project requires an exception (legacy or external constraint), document it in:
+  - table Description
+  - project documentation
 
 ## What each part means
 - `_UI`
   - Marks the table as disconnected/support
   - Enables quick filtering/autocomplete in DAX by typing `_UI`
-  - Tends to sort lower than letter-starting tables in Fields pane
 - `<Short User Name>`
   - Concise, user-facing name describing what the selector controls
   - Prefer short nouns + common abbreviations (YTD, MAT, KPI)
@@ -50,6 +53,9 @@ All disconnected/support tables in 30_Support_UI must be named:
 ## Implementation notes
 - If the table is used only to drive visuals and not meant for self-service:
   - consider hiding it in the Fields pane (but keep the `_UI` prefix)
+- Field Parameter tables should follow the same pattern:
+  - `_UI Metric Selector`
+  - `_UI Axis Selector`
 - Prefer stable keys:
   - include Index/Sort columns where needed
   - set “Do not summarize” for ID-like columns

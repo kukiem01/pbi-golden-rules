@@ -1,5 +1,10 @@
 # 05) Performance - DirectQuery, Folding, Incremental Refresh
 
+## Storage mode choice (first decision)
+- Prefer Import mode by default
+- Use DirectQuery only when requirements force it (freshness, size, governance constraints)
+- For composite models, use Dual mode only when justified and tested
+
 ## Query folding (default)
 - Preserve folding whenever possible
 - Keep fold-friendly steps early:
@@ -12,6 +17,7 @@
 - DirectQuery relies on folding; non-foldable steps can break support or performance
 - Staging (Raw → Stg → Final) is allowed **only** if the final loaded query still folds
 - Using Reference does not inherently break folding; non-foldable steps do
+- Reduce high-cardinality text usage in visuals where possible
 - Validate with diagnostics/source query history (do not guess)
 
 ## Incremental refresh (where to implement)
@@ -22,3 +28,4 @@
 - Use a safe boundary pattern:
   - `DateTime >= RangeStart`
   - `DateTime <  RangeEnd`
+- If needed, configure Detect Data Changes with a reliable last-update column
